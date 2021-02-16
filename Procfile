@@ -1,0 +1,1 @@
+web: bin/garbage-removal-notification-api
