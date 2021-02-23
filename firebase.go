@@ -17,7 +17,7 @@ func getGarbages() []User {
 	// firestoreの設定
 	client, _ := app.Firestore(ctx)
 	// usersコレクションを全取得
-	docRefs, _ := client.Collection("users").Documents(ctx).GetAll()
+	docRefs, _ := client.Collection("users").Where("isNotificated", "==", true).Documents(ctx).GetAll()
 
 	// firestoreから取得したデータを整形
 	users := []User{}
