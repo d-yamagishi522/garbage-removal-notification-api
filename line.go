@@ -57,10 +57,10 @@ func formatGarbages(users []User) []Body {
 	garbages := []UserGarbage{}
 	for _, user := range users {
 		for _, item := range user.Days {
-			if item.Weekday == wd && item.Garbage != "" {
+			if item.Weekday == wd && item.Str != "" {
 				obj := UserGarbage{
 					ID:   user.ID,
-					Text: item.Garbage + "回収の日",
+					Text: item.Str + "回収の日",
 				}
 				garbages = append(garbages, obj)
 			}

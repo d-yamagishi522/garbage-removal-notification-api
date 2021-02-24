@@ -20,7 +20,7 @@ type User struct {
 
 // Day User struct用
 type Day struct {
-	Garbage string `json:"garbage"`
+	Str     string `json:"str"`
 	Weekday string `json:"weekday"`
 }
 
