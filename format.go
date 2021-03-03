@@ -1,51 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-	"os"
 	"time"
-
-	"github.com/labstack/echo"
 )
-
-// ライン送信のメインの処理
-func sendMessage(ctx echo.Context) error {
-	// データを取得
-	users := getGarbages()
-	// リクエスト用に整形
-	bodys := formatGarbages(users)
-
-	// リクエスト処理
-	for _, body := range bodys {
-		// クライアント作成
-		client := &http.Client{}
-		// タイムアウトを設定
-		client.Timeout = time.Second * 15
-
-		// byteに変更
-		jsonValue, _ := json.Marshal(body)
-		// リクエストを作成
-		req, _ := http.NewRequest("POST", "https://api.line.me/v2/bot/message/multicast", bytes.NewBuffer(jsonValue))
-
-		// ヘッダーを追加
-		header := http.Header{}
-		header.Set("Content-Length", "10000")
-		header.Add("Content-Type", "application/json")
-		header.Add("Authorization", "Bearer "+os.Getenv("LINE_ACCESS_TOKEN"))
-		req.Header = header
-
-		// リクエストを実行
-		resp, err := client.Do(req)
-		if err != nil {
-			return ctx.NoContent(http.StatusBadRequest)
-		}
-		defer resp.Body.Close()
-	}
-
-	return ctx.NoContent(http.StatusNoContent)
-}
 
 // firestoreから取得したデータをリクエスト用に整形する処理
 func formatGarbages(users []User) []Body {
@@ -58,9 +15,14 @@ func formatGarbages(users []User) []Body {
 	for _, user := range users {
 		for _, item := range user.Days {
 			if item.Weekday == wd && item.Str != "" {
+				text := "本日は、" + item.Str + `回収の日です。
+
+通知を停止する場合は以下のリンクから設定してください。
+https://grn-line.herokuapp.com/
+`
 				obj := UserGarbage{
 					ID:   user.ID,
-					Text: item.Str + "回収の日",
+					Text: text,
 				}
 				garbages = append(garbages, obj)
 			}
