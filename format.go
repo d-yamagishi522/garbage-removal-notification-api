@@ -7,8 +7,10 @@ import (
 // firestoreから取得したデータをリクエスト用に整形する処理
 func formatGarbages(users []User) []Body {
 	// 曜日を取得
+	time.Local = time.FixedZone("UTC", 0)
 	t := time.Now()
-	wd := t.Weekday().String()
+	jst := t.Add(9 * time.Hour)
+	wd := jst.Weekday().String()
 
 	// ユーザーとゴミのメッセージを1対1に整形
 	garbages := []UserGarbage{}
